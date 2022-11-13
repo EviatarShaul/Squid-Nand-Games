@@ -1,0 +1,54 @@
+// This file is part of "Squid(nand)Game"
+// by Amir Weinfeld and Eviatar Shaul. 
+// File name: project9/Blocks.jack
+class Blocks {
+    static Array blockArray;
+    field int numOfBlocks;
+    
+    constructor Blocks new(int newNumOfBlocks) {
+        var int i;
+        let numOfBlocks = newNumOfBlocks;
+        let blockArray = Array.new(numOfBlocks);
+
+        while (i < numOfBlocks) {
+            let blockArray[i] = Block.new(64 + (i * 32), 
+                96 + (32 * Random.randRange(4)));
+            let i = i + 1;
+        }
+        return this;
+    }
+
+    method boolean collide(int xChar, int yChar) {
+        var int i;
+        var Block blk;
+
+        let i = 0;
+        while (i < numOfBlocks) {
+            let blk = blockArray[i];
+
+            if (~(xChar = blk.getX())) { }
+            else {
+                if (yChar = blk.getY()) {
+                    return false;
+                }
+            }
+
+            let i = i + 1;
+        }
+        return true;
+    }
+    
+    method void dispose() {
+        var int i;
+        var Block blk;
+        while (i < numOfBlocks) {
+            let blk = blockArray[i];
+            do blk.dispose();
+            let i = i + 1;
+        }
+        
+       do blockArray.dispose();
+       do Memory.deAlloc(this);
+       return;
+    }
+}

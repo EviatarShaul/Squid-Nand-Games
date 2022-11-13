@@ -1,0 +1,312 @@
+// This file is part of "Squid(nand)Game"
+// by Amir Weinfeld and Eviatar Shaul. 
+// File name: project9/Charecter.jack
+class Charecter {
+   field int x, y; // screen location of the charecter's top-left corner
+   field int size; // length of this charecter, in pixels
+   field int direction; // the charecter's current direction: 
+                        // 0=none, 1=up, 2=down, 3=left, 4=right
+   field int movesToMake; // Number of moves to make
+   field int toMove; // Number until next move
+   field Blocks blocks;
+   
+    /** Constructs a new charecter with a given location and size. */
+    constructor Charecter new(int Ax, int Ay, int Asize, Blocks newBlocks) {
+       let x = Ax;
+       let y = Ay;
+       let size = Asize;
+       do draw();
+
+       let blocks = newBlocks;
+
+       let direction = 0;  // initial state is no movement
+       let movesToMake = 0; // any move will be 30 pixel
+       let toMove = 0; // arithmetic calculate to make 30 steps
+       
+       return this;
+    }
+
+    method boolean isMoving() {
+       if (movesToMake = 0) {
+          return false;
+       }
+       return true;
+    }
+
+    /** Moves the charecter in the current direction. */
+    method void moveCharecter() {
+       if (direction = 1) { do moveUp(); }
+       if (direction = 2) { do moveDown(); }
+       if (direction = 3) { do moveLeft(); }
+       if (direction = 4) { do moveRight(); }
+       return;
+    }
+
+    method bool canGoTo() {
+       if (direction = 1) {
+          return blocks.collide(x, y - 32);
+       }
+       if (direction = 2) { 
+          if (y = 224) {
+             return false;
+          }
+          return blocks.collide(x, y + 32);
+       }
+       if (direction = 3) { 
+          if (x < 32) {
+             return false;
+          }
+          return blocks.collide(x - 32, y);
+       }
+       if (direction = 4) {
+          return blocks.collide(x + 32, y);
+       }
+       return true;
+    }
+
+   /**update anything that related to charecter */
+    method void update() {
+      var char key;
+      var bool pressedDirection;
+      let pressedDirection = false;
+
+      let key = Keyboard.keyPressed();
+      if (movesToMake=0) {
+         if (key = 131 & (y > 97)) { // up arrow
+            let direction = 1;
+            let pressedDirection = true;
+            }
+         if (key = 133) { // down arrow
+            let direction = 2;
+            let pressedDirection = true; 
+            }
+         if (key = 130) { // left arrow
+            let direction = 3;
+            let pressedDirection = true; 
+         }
+         if (key = 132) { // right arrow
+            let direction = 4;
+            let pressedDirection = true; 
+         }
+
+         if (pressedDirection=true) {
+            if (canGoTo()) {
+               let movesToMake = 800;
+            }
+         }
+      }
+      else { // This block is to make sure player can't move after pressed any direction
+         if (toMove = 0) {
+            // will move charecter every 30 "ticks"
+            do moveCharecter();
+            let toMove = 25;
+         }
+         let toMove = toMove-1;
+         let movesToMake = movesToMake - 1;
+      }
+
+      return;
+    }
+
+   
+    /** Disposes this charecter. */
+    method void dispose() {
+       do Memory.deAlloc(this);
+       return;
+    }
+
+    /** Draws the charecter on the screen. */
+    method void draw() {
+       do Screen.setColor(true);
+       // do Screen.drawRectangle(x, y, x + size, y + size);
+       do drawChar();
+       return;
+    }
+
+    method void drawChar() {
+       do Screen.drawLine(x + 12, y + 2, x + 20, y + 2); 
+
+       do Screen.drawLine(x + 11, y + 3, x + 12, y + 3);
+       do Screen.drawLine(x + 20, y + 3, x + 21, y + 3);
+
+       do Screen.drawLine(x + 10, y + 4, x + 11, y + 4);
+       do Screen.drawLine(x + 15, y + 4, x + 17, y + 4);
+       do Screen.drawLine(x + 21, y + 4, x + 22, y + 4);
+       
+       do Screen.drawLine(x + 9, y + 5, x + 10, y + 5);
+       do Screen.drawLine(x + 13, y + 5, x + 14, y + 5);
+       do Screen.drawLine(x + 18, y + 5, x + 19, y + 5);
+       do Screen.drawLine(x + 22, y + 5, x + 23, y + 5);
+       
+       do Screen.drawLine(x + 9, y + 6, x + 10, y + 6);
+       do Screen.drawLine(x + 12, y + 6, x + 12, y + 6);
+       do Screen.drawLine(x + 20, y + 6, x + 20, y + 6);
+       do Screen.drawLine(x + 22, y + 6, x + 23, y + 6);
+       
+       do Screen.drawLine(x + 9, y + 7, x + 10, y + 7);
+       do Screen.drawLine(x + 12, y + 7, x + 12, y + 7);
+       do Screen.drawLine(x + 20, y + 7, x + 20, y + 7);
+       do Screen.drawLine(x + 22, y + 7, x + 23, y + 7);
+       
+       do Screen.drawLine(x + 9, y + 8, x + 10, y + 8);
+       do Screen.drawLine(x + 13, y + 8, x + 14, y + 8);
+       do Screen.drawLine(x + 18, y + 8, x + 19, y + 8);
+       do Screen.drawLine(x + 22, y + 8, x + 23, y + 8);
+       
+       do Screen.drawLine(x + 9, y + 9, x + 10, y + 9);
+       do Screen.drawLine(x + 15, y + 9, x + 17, y + 9);
+       do Screen.drawLine(x + 22, y + 9, x + 23, y + 9);
+       
+       do Screen.drawLine(x + 9, y + 10, x + 23, y + 10);
+       
+       do Screen.drawLine(x + 9, y + 11, x + 10, y + 11);
+       do Screen.drawLine(x + 16, y + 11, x + 16, y + 11);
+       do Screen.drawLine(x + 22, y + 11, x + 23, y + 11);
+       
+       do Screen.drawLine(x + 9, y + 12, x + 10, y + 12);
+       do Screen.drawLine(x + 16, y + 12, x + 16, y + 12);
+       do Screen.drawLine(x + 22, y + 12, x + 23, y + 12);
+       
+       do Screen.drawLine(x + 9, y + 13, x + 11, y + 13);
+       do Screen.drawLine(x + 16, y + 13, x + 16, y + 13);
+       do Screen.drawLine(x + 21, y + 13, x + 23, y + 13);
+       
+       do Screen.drawLine(x + 10, y + 14, x + 12, y + 14);
+       do Screen.drawLine(x + 16, y + 14, x + 16, y + 14);
+       do Screen.drawLine(x + 20, y + 14, x + 22, y + 14);
+       
+       do Screen.drawLine(x + 12, y + 15, x + 20, y + 15);
+       
+       do Screen.drawLine(x + 12, y + 16, x + 15, y + 16);
+       do Screen.drawLine(x + 17, y + 16, x + 20, y + 16);
+       
+       do Screen.drawLine(x + 9, y + 17, x + 11, y + 17);
+       do Screen.drawLine(x + 13, y + 17, x + 15, y + 17);
+       do Screen.drawLine(x + 17, y + 17, x + 19, y + 17);
+       do Screen.drawLine(x + 21, y + 17, x + 23, y + 17);
+       
+       do Screen.drawLine(x + 9, y + 18, x + 11, y + 18);
+       do Screen.drawLine(x + 13, y + 18, x + 15, y + 18);
+       do Screen.drawLine(x + 17, y + 18, x + 19, y + 18);
+       do Screen.drawLine(x + 21, y + 18, x + 23, y + 18);
+       
+       do Screen.drawLine(x + 7, y + 19, x + 12, y + 19);
+       do Screen.drawLine(x + 15, y + 19, x + 15, y + 19);
+       do Screen.drawLine(x + 17, y + 19, x + 17, y + 19);
+       do Screen.drawLine(x + 20, y + 19, x + 25, y + 19);
+       // Easter Egg:  the cake is a lie.
+       do Screen.drawLine(x + 6, y + 20, x + 12, y + 20);
+       do Screen.drawLine(x + 15, y + 20, x + 15, y + 20);
+       do Screen.drawLine(x + 17, y + 20, x + 17, y + 20);
+       do Screen.drawLine(x + 20, y + 20, x + 26, y + 20);
+       
+       do Screen.drawLine(x + 6, y + 21, x + 9, y + 21);
+       do Screen.drawLine(x + 11, y + 21, x + 12, y + 21);
+       do Screen.drawLine(x + 15, y + 21, x + 15, y + 21);
+       do Screen.drawLine(x + 17, y + 21, x + 17, y + 21);
+       do Screen.drawLine(x + 20, y + 21, x + 21, y + 21);
+       do Screen.drawLine(x + 23, y + 21, x + 26, y + 21);
+
+       do Screen.drawLine(x + 5, y + 22, x + 8, y + 22);
+       do Screen.drawLine(x + 10, y + 22, x + 14, y + 22);
+       do Screen.drawLine(x + 18, y + 22, x + 22, y + 22);
+       do Screen.drawLine(x + 24, y + 22, x + 27, y + 22);
+
+       do Screen.drawLine(x + 5, y + 23, x + 8, y + 23);
+       do Screen.drawLine(x + 10, y + 23, x + 15, y + 23);
+       do Screen.drawLine(x + 17, y + 23, x + 22, y + 23);
+       do Screen.drawLine(x + 24, y + 23, x + 27, y + 23);
+
+       do Screen.drawLine(x + 5, y + 24, x + 5, y + 24);
+       do Screen.drawLine(x + 7, y + 24, x + 8, y + 24);
+       do Screen.drawLine(x + 24, y + 24, x + 25, y + 24);
+       do Screen.drawLine(x + 27, y + 24, x + 27, y + 24);
+
+       do Screen.drawLine(x + 5, y + 25, x + 8, y + 25);
+       do Screen.drawLine(x + 10, y + 25, x + 22, y + 25);
+       do Screen.drawLine(x + 24, y + 25, x + 27, y + 25);
+       
+       do Screen.drawLine(x + 10, y + 26, x + 22, y + 26);
+       
+       do Screen.drawLine(x + 10, y + 27, x + 22, y + 27);
+       
+       do Screen.drawLine(x + 10, y + 28, x + 22, y + 28);
+
+       do Screen.drawLine(x + 10, y + 29, x + 15, y + 29);
+       do Screen.drawLine(x + 17, y + 29, x + 22, y + 29);
+
+       do Screen.drawLine(x + 11, y + 30, x + 15, y + 30);
+       do Screen.drawLine(x + 17, y + 30, x + 21, y + 30);
+
+       do Screen.drawLine(x + 12, y + 31, x + 12, y + 31);
+       do Screen.drawLine(x + 15, y + 31, x + 15, y + 31);
+       do Screen.drawLine(x + 17, y + 31, x + 17, y + 31);
+       do Screen.drawLine(x + 20, y + 31, x + 20, y + 31);
+
+       if (y + size < 256) {
+         do Screen.drawLine(x + 17, y + 32, x + 21, y + 32);
+         do Screen.drawLine(x + 11, y + 32, x + 15, y + 32);
+       }
+       return;
+    }
+
+    /** Moves the charecter up by 1 pixels. */
+    method void moveUp() {
+       if (y > 1) { 
+          do Screen.setColor(false);
+          do drawChar();
+
+          let y = y - 1;
+          do Screen.setColor(true);
+          do drawChar();
+       }
+       return;
+    }
+
+    /** Moves the charecter down by 1 pixels. */
+    method void moveDown() {
+       if ((y + size) < 256) {
+          do Screen.setColor(false);
+          do drawChar();
+
+          let y = y + 1;
+          do Screen.setColor(true);
+          do drawChar();
+       }
+       return;
+    }
+
+    /** Moves the charecter left by 1 pixels. */
+    method void moveLeft() {
+       if (x > 0) {
+          do Screen.setColor(false);
+          do drawChar();
+
+          let x = x - 1;
+          do Screen.setColor(true);
+          do drawChar();
+       }
+       return;
+    }
+
+    /** Moves the charecter right by 1 pixels. */
+    method void moveRight() {
+       if ((x + size) < 511) {
+          do Screen.setColor(false);
+          do drawChar();
+
+          let x = x + 1;
+          do Screen.setColor(true);
+          do drawChar();
+       }
+       return;
+    }
+
+    method int getX() {
+       return x;
+    }
+    
+    method int getY() {
+       return y;
+    }
+}

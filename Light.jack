@@ -1,0 +1,88 @@
+// This file is part of "Squid(nand)Game"
+// by Amir Weinfeld and Eviatar Shaul. 
+// File name: project9/Light.jack
+class Light {
+    field boolean canMove; 
+    field int timer;
+    field int topLCornerX;
+    field int topLCornerY;
+    field int width;
+    field int lightLen;
+    field int randomTime;
+
+    /** Constructs a new Light. */
+    constructor Light new() {
+        // Creates a light on the screen
+        // of the screen.
+        let topLCornerX = 170;
+        let topLCornerY = 34;
+        let width = 20;
+        do drawLightOutline();
+        do resetTimer();
+        let canMove = true;
+        let lightLen = 250;
+
+       do BackGround.setOffset(0);
+       do BackGround.drawGo();
+       
+        do Screen.setColor(true); //set black
+        do Screen.drawRectangle(topLCornerX, topLCornerY, topLCornerX + 150, topLCornerY + width);
+        
+        return this;
+    }
+
+    method void drawLightOutline() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(topLCornerX - 1, topLCornerY - 1, topLCornerX + 151, topLCornerY + width + 1);
+        return;
+    }
+
+    method void resetTimer() {
+        let randomTime = Random.randRange(1000);
+        let timer = 2500 - randomTime;
+        return;
+    }
+
+    method boolean getCanMove() {
+        return ~canMove;
+    }
+        
+    method void draw() {
+        let lightLen = timer / 17;
+        do Screen.setColor(false); //set white
+        do Screen.drawRectangle(topLCornerX + lightLen, topLCornerY, topLCornerX + 150, topLCornerY + width);
+        return;
+    }
+
+    method void drawSign() {
+        if (~canMove) {
+            do BackGround.drawGo();
+        }
+        else {
+            do BackGround.drawStop();
+        }
+        return;
+    }
+
+    method void update() {
+        let timer = timer - 1;
+
+        do draw();
+        if (timer < 0) {
+            do drawSign();
+            let canMove = ~canMove;
+            do resetTimer();
+        
+            do Screen.setColor(canMove); //set black
+            do Screen.drawRectangle(topLCornerX, topLCornerY, topLCornerX + 150, topLCornerY + width);
+
+        }
+        return;
+    }
+
+    /** Disposes this game. */
+    method void dispose() { 
+       do Memory.deAlloc(this);
+       return;
+    }
+}

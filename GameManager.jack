@@ -1,0 +1,120 @@
+// This file is part of "Squid(nand)Game"
+// by Amir Weinfeld and Eviatar Shaul. 
+// File name: project9/GameManager.jack
+class GameManager {
+    field Charecter charecter; // the charecter of this game
+    field Light light;
+    field Menu menu;
+    field Blocks blocks;
+
+    /** Constructs a new Charecter Game. */
+    constructor GameManager new() {
+       // Creates a 30 by 30 pixels Charecter and positions it at the top-left
+       // of the screen.
+       let menu = Menu.new();
+       do menu.displayMenu();
+       do menu.dispose();
+       
+       // drawing background:
+       do BackGround.drawArrows();
+       do BackGround.drawMove();
+       do BackGround.drawGoal();
+
+       // generating blocks:
+       let blocks = Blocks.new(12);
+       let charecter = Charecter.new(0, 160, 32, blocks);
+       let light = Light.new();
+       
+       
+       return this;
+    }
+   
+
+   /** Disposes this game. */ 
+    method void dispose() {
+       do blocks.dispose();
+       do charecter.dispose();
+       do light.dispose();
+       do Memory.deAlloc(this);
+       return;
+    }
+   
+
+    /** Runs the game: handles the user's inputs and moves the charecter accordingly */
+    method void run() {
+       var char key;  // the key currently pressed by the user
+       var boolean exit;
+       var boolean won;
+       var boolean lost;
+       var boolean charMoving;
+
+       let exit = false;
+       let won = false;
+       let lost = false;
+       let charMoving = false;
+       
+       // wait after showing screen.
+       do Sys.wait(200);
+
+       // start of game:
+       while (~exit) {
+          // waits for a key to be pressed
+          let key = Keyboard.keyPressed();
+          if (key = 81)  { let exit = true; } // q key
+
+          do light.update();
+          do charecter.update();
+
+          // Check if player is moving in green light
+          let lost = light.getCanMove();
+          let charMoving = charecter.isMoving();
+          if (lost & charMoving) {
+            // Comment the next two line to enable God-Mode:
+             do light.update();
+             let exit = true;
+          }
+
+          do Sys.wait(1);
+          if (charecter.getX() > 477) {
+            let won = true;
+            let exit = true;
+          }
+      }
+
+
+      // clearing screen
+      do Screen.clearScreen();
+
+      if (won) {
+         do Messages.displayWin();
+      }
+      else {
+         if (lost) {
+            do Messages.displayLost();
+         }
+      }
+
+      do askPlayAgain();
+      
+      return;
+    }
+    
+    method void askPlayAgain() {
+       var String str1;
+       var String str2;
+       
+       let str1 = "Game Over - do you want to Play again?";
+       let str2 = "Y - Back to Main Menu   N - Quit Game";
+
+       do Output.moveCursor(15, 13);
+       do Output.printString(str1);
+       do Output.println();
+
+       do Output.moveCursor(17, 13);
+       do Output.printString(str2);
+       do Output.println();
+
+       return;
+    }
+
+}

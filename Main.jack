@@ -1,0 +1,37 @@
+// This file is part of "Squid(nand)Game"
+// by Amir Weinfeld and Eviatar Shaul. 
+// File name: project9/Main.jack
+class Main {
+   function void main() {
+      var GameManager game;
+      var boolean playAgain;
+      var char key;
+
+      let playAgain = true;
+      
+      while (playAgain) {
+        let key = 0;
+        let game = GameManager.new();
+        do game.run();
+        do game.dispose();
+
+        // Y = 89, 78 = N
+        while(~(key = 89) & ~(key = 78)) {
+          let key = Keyboard.keyPressed();
+          do Sys.wait(1);
+        }
+
+        if (key = 78) {
+           let playAgain = false;
+        }
+        else {
+         while (~(key = 0)) {
+            let key = Keyboard.keyPressed();
+            do Sys.wait(1);
+         }
+        }
+        do Screen.clearScreen();
+      }
+      return ;
+   }
+}

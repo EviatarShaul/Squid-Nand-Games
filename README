@@ -1,0 +1,33 @@
+amir_2000, eviatarsh
+===============================================================================
+Amir Weinfeld, ID 211368550, amir.weinfeld@mail.huji.ac.il
+Eviatar Shaul, ID 205627912, eviatar.shaul@mail.huji.ac.il
+===============================================================================
+
+                           Project 9 - High-Level Programming
+                           ----------------------------------
+Submitted Files
+---------------
+README - This file
+Main.jack - init GameManager object and run a single game.
+GameManager.jack - The game "core", init Charecter, Light, Menu and
+                Block classes to run single game. contain game logic.
+Charecter.jack - The player figure, base on charecter from 
+                "Squid Game" series. This class draw charecter and 
+                store it (x,y) position.
+Light.jack - Take care for the game time. Tell the player when it
+             is legal to move and if the player tring to move
+             during illigal time - it cause to "GameOver".
+Menu.jack - The first screen that player see. we mainly make it to
+            generate "pseudo-random" seed.
+Background.jack - game Background, contain Arrows and goal line.
+Blocks.jack - contain list of all obstracle in the racetrack. 
+              Actually, hold array of Block object.
+Block.jack - Draw a single Block object.
+Messages.jack - Static Class, draw "You Won", "You Lost" while the game ended.
+Random.jack - Static Class, any time called change the current seed.
+              we set the seed in the "MainMenu" screen: some counter
+              are run, after the player press any key, we take the 
+              key value, add it to the counter and set it as a first seed.
+              
+                            

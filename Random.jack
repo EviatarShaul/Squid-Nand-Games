@@ -1,0 +1,43 @@
+// This file is part of "Squid(nand)Game"
+// by Amir Weinfeld and Eviatar Shaul. 
+// File name: project9/Random.jack
+class Random {
+    static int start;
+    
+    function void initStart(int newStart) {
+        let start = newStart;
+        return;
+    }
+    /** Change The Seed any time called */
+    function int rand() {
+        let start = start + 20251;
+        
+        if (start < 0) {
+            let start = (start - 32767) - 1;
+        }
+
+        return start;
+    }
+
+    /** this static function returns an int in a 
+        random range (from 0.range - 1) */
+    function int randRange(int range) {
+        var int res;
+        var int val;
+
+        let val = 1;
+        while (val < range) {
+            let val = (Math.multiply(val, 2)) + 1;
+        }
+
+        let res = Random.rand() & val;
+        let res = res | res;
+
+        while (res > range) {
+            let res = Random.rand() & val;
+        }
+
+        return res;
+    }
+
+}

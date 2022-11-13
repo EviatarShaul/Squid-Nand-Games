@@ -1,0 +1,41 @@
+// This file is part of "Squid(nand)Game"
+// by Amir Weinfeld and Eviatar Shaul. 
+// File name: project9/Block.jack
+class Block {
+    field int x;
+    field int y;
+    
+    constructor Block new(int Ax ,int Ay) {
+        let x = Ax;
+        let y = Ay;
+        do drawBlock();
+        return this;
+    }
+
+    method void drawBlock() {
+        do Screen.setColor(true); //set black
+        do Screen.drawRectangle(x + 1, y + 1, x + 31, y + 31);
+        do Screen.setColor(false); //set black
+        do Screen.drawRectangle(x + 2, y + 2, x + 30, y + 30);
+        do Screen.setColor(true); //set black
+        do Screen.drawRectangle(x + 3, y + 3, x + 29, y + 29);
+
+        do Screen.setColor(false); //set black
+        do Screen.drawLine(x + 3, y + 3, x + 29, y + 29);
+        do Screen.drawLine(x + 29, y + 3, x + 3, y + 29);
+        return;
+    }
+    
+    method int getX() {
+        return x;
+    }
+
+    method int getY() {
+        return y;
+    }
+
+    method void dispose() {
+       do Memory.deAlloc(this);
+       return;
+    }
+}
